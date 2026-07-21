@@ -24,11 +24,12 @@ export default function Dashboard() {
       total: txs.filter((t) => t.type === 'expense' && t.memberId === m.id && monthKey(t.date) === month).reduce((a, t) => a + t.amount, 0),
     }))
 
-    // Last 6 months income vs expense bars.
+    // Last 6 months income vs expense bars — local time so month boundaries
+    // align with what the user actually sees on their calendar.
     const trend = Array.from({ length: 6 }, (_, i) => {
       const d = new Date()
       d.setMonth(d.getMonth() - (5 - i))
-      const key = d.toISOString().slice(0, 7)
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
       return {
         name: d.toLocaleString(undefined, { month: 'short' }),
         income: txs.filter((t) => t.type === 'income' && monthKey(t.date) === key).reduce((a, t) => a + t.amount, 0) / 100,

@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# NestEgg
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**AI-adjacent, privacy-first budget & expense tracker.** All data stays in
+your browser — no accounts, no server, no telemetry.
 
-Currently, two official plugins are available:
+[![CI](https://github.com/dnzengou/budget-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/dnzengou/budget-tracker/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/dnzengou/budget-tracker/actions/workflows/codeql.yml/badge.svg)](https://github.com/dnzengou/budget-tracker/actions/workflows/codeql.yml)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- Track income + expenses for one or more household members
+- Deterministic auto-categorization from note keywords (type-aware)
+- Per-category budgets with pressure insights
+- 6-month trend + category breakdown dashboard
+- Deterministic rule-based insights (MoM swings, savings rate, recurring load)
+- CSV import + export (round-trip)
+- Two in-browser roles: **Admin** (read/write) · **Guest** (read-only)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the ESLint configuration
+React 19 · Vite 7 · TypeScript 5.9 (strict) · Tailwind 3.4 · shadcn/ui · recharts · react-router 7
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Run locally
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev       # http://localhost:3000
+npm run build     # tsc + vite build → dist/
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Environment variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Vite exposes anything prefixed with `VITE_` to the browser bundle. All values
+below are optional; defaults preserve legacy dev credentials.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Variable                | Default     | Purpose                          |
+| ----------------------- | ----------- | -------------------------------- |
+| `VITE_ADMIN_PASSWORD`   | `admin123`  | Login password for Admin role    |
+| `VITE_GUEST_PASSWORD`   | `guest`     | Login password for Guest role    |
+
+## Deploy
+
+Push to `main` → Vercel auto-detects Vite and rebuilds. Security headers
+(CSP, HSTS, X-Frame-Options, etc.) are declared in [vercel.json](vercel.json)
+and applied at the edge.
+
+## Documentation
+
+- [BLUEPRINT.md](BLUEPRINT.md) — roadmap, changelog, architecture map
+- [SECURITY.md](SECURITY.md) — reporting policy + threat model
+
+## License
+
+MIT

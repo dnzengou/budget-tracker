@@ -33,28 +33,23 @@ type Action =
 function reducer(state: State, action: Action): State {
   switch (action.kind) {
     case 'onboard':
-      return { 
-        ...state, 
-        settings: action.settings, 
-        members: action.members,
-        auth: state.auth || { isLoggedIn: false, isAdmin: false }
-      }
+      return { ...state, settings: action.settings, members: action.members }
     case 'addTx':
-      return { ...state, transactions: [action.tx, ...state.transactions], auth: state.auth }
+      return { ...state, transactions: [action.tx, ...state.transactions] }
     case 'deleteTx':
-      return { ...state, transactions: state.transactions.filter((t) => t.id !== action.id), auth: state.auth }
+      return { ...state, transactions: state.transactions.filter((t) => t.id !== action.id) }
     case 'setBudget': {
       const rest = state.budgets.filter((b) => b.category !== action.budget.category)
-      return { ...state, budgets: [...rest, action.budget], auth: state.auth }
+      return { ...state, budgets: [...rest, action.budget] }
     }
     case 'removeBudget':
-      return { ...state, budgets: state.budgets.filter((b) => b.category !== action.category), auth: state.auth }
+      return { ...state, budgets: state.budgets.filter((b) => b.category !== action.category) }
     case 'addMember':
-      return { ...state, members: [...state.members, action.member], auth: state.auth }
+      return { ...state, members: [...state.members, action.member] }
     case 'importTx':
-      return { ...state, transactions: [...action.txs, ...state.transactions], auth: state.auth }
+      return { ...state, transactions: [...action.txs, ...state.transactions] }
     case 'reset':
-      return EMPTY
+      return { ...EMPTY, auth: state.auth }
     case 'login':
       return { ...state, auth: { isLoggedIn: true, isAdmin: action.isAdmin, username: action.username } }
     case 'logout':
@@ -62,19 +57,30 @@ function reducer(state: State, action: Action): State {
   }
 }
 
+// Everything except `auth` is safe to persist. Persisting `isAdmin` would let a
+// visitor flip the flag in devtools and reload straight into admin mode.
+const PERSIST_KEYS: (keyof State)[] = ['settings', 'members', 'transactions', 'budgets']
+
 function load(): State {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return EMPTY
     const parsed = JSON.parse(raw)
-    // Ensure auth
-    if (!parsed.auth) {
-      parsed.auth = { isLoggedIn: false, isAdmin: false }
+    if (!parsed || typeof parsed !== 'object') return EMPTY
+    const merged: State = { ...EMPTY }
+    for (const key of PERSIST_KEYS) {
+      if (key in parsed) (merged as unknown as Record<string, unknown>)[key] = parsed[key]
     }
-    return { ...EMPTY, ...parsed }
+    return merged
   } catch {
-    return EMPTY // corrupted storage → start clean rather than crash
+    return EMPTY
   }
+}
+
+function persist(state: State): void {
+  const slice: Partial<State> = {}
+  for (const key of PERSIST_KEYS) (slice as Record<string, unknown>)[key] = state[key]
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(slice))
 }
 
 const StoreContext = createContext<{ state: State; dispatch: React.Dispatch<Action> } | null>(null)
@@ -82,7 +88,7 @@ const StoreContext = createContext<{ state: State; dispatch: React.Dispatch<Acti
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, load)
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    persist(state)
   }, [state])
   return <StoreContext.Provider value={{ state, dispatch }}>{children}</StoreContext.Provider>
 }

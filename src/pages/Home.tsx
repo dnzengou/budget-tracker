@@ -22,18 +22,24 @@ export default function Home() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
+  // Demo-only credentials: the app runs entirely in the browser with localStorage,
+  // so there's no server to authenticate against. Values must live at build-time
+  // (VITE_ADMIN_PASSWORD / VITE_GUEST_PASSWORD) so ops can rotate without a code
+  // change; a missing env falls back to the historical dev values.
+  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD ?? 'admin123'
+  const GUEST_PASSWORD = import.meta.env.VITE_GUEST_PASSWORD ?? 'guest'
+
   const handleLogin = () => {
-    // Simple demo auth - in real app use proper hashing
-    if (password === 'admin123') {
+    if (password === ADMIN_PASSWORD) {
       dispatch({ kind: 'login', isAdmin: true, username: username || 'Admin' })
       setPassword('')
       setError('')
-    } else if (password === 'guest') {
+    } else if (password === GUEST_PASSWORD) {
       dispatch({ kind: 'login', isAdmin: false, username: username || 'Guest' })
       setPassword('')
       setError('')
     } else {
-      setError('Invalid credentials. Admin: admin123, Guest: guest')
+      setError('Invalid credentials.')
     }
   }
 
@@ -70,7 +76,7 @@ export default function Home() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password (admin123 or guest)"
+                placeholder="Password"
                 onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               />
             </div>

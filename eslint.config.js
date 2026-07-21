@@ -20,4 +20,21 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  // shadcn/ui components ship helper hooks (useSidebar, toggleVariants…) alongside
+  // the component export by design; react-refresh strictness would force a rewrite.
+  {
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+      'react-hooks/purity': 'off',
+    },
+  },
+  // Store colocates the Provider with its consumer hook + a couple of small utils —
+  // splitting would spray imports across the codebase for a hot-reload nicety.
+  {
+    files: ['src/lib/store.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])

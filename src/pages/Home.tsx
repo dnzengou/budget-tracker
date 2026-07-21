@@ -6,7 +6,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { RotateCcw, LogIn, LogOut, User } from 'lucide-react'
+import { RotateCcw, LogIn, LogOut } from 'lucide-react'
 import AddTransaction from '@/sections/AddTransaction'
 import Budgets from '@/sections/Budgets'
 import Dashboard from '@/sections/Dashboard'
@@ -18,7 +18,6 @@ import { useState } from 'react'
 
 export default function Home() {
   const { state, dispatch } = useStore()
-  const [showLogin, setShowLogin] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -27,12 +26,10 @@ export default function Home() {
     // Simple demo auth - in real app use proper hashing
     if (password === 'admin123') {
       dispatch({ kind: 'login', isAdmin: true, username: username || 'Admin' })
-      setShowLogin(false)
       setPassword('')
       setError('')
     } else if (password === 'guest') {
       dispatch({ kind: 'login', isAdmin: false, username: username || 'Guest' })
-      setShowLogin(false)
       setPassword('')
       setError('')
     } else {

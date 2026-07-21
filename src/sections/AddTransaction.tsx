@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { Plus } from 'lucide-react'
 import { autoCategorize, EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/lib/categories'
-import { toCents } from '@/lib/money'
+import { toCents, todayISO } from '@/lib/money'
 import { uid, useStore } from '@/lib/store'
 import type { TxType } from '@/types'
 
@@ -19,7 +19,7 @@ export default function AddTransaction() {
   const [note, setNote] = useState('')
   const [category, setCategory] = useState('')
   const [touchedCategory, setTouchedCategory] = useState(false)
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
+  const [date, setDate] = useState(todayISO())
   const [memberId, setMemberId] = useState(state.members[0]?.id ?? '')
   const [recurring, setRecurring] = useState(false)
 

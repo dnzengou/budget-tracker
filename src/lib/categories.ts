@@ -24,11 +24,17 @@ const KEYWORDS: Record<string, string[]> = {
   Gift: ['gift', 'birthday money'],
 }
 
+const INCOME_SET = new Set<string>(INCOME_CATEGORIES)
+
 export function autoCategorize(note: string, type: 'expense' | 'income'): string {
   const text = note.toLowerCase()
   let best = ''
   let bestHits = 0
   for (const [category, words] of Object.entries(KEYWORDS)) {
+    // A note like "salary refund" (an expense reimbursement) must not match income
+    // keywords, and vice versa — matched categories must belong to the tx type.
+    const isIncome = INCOME_SET.has(category)
+    if (type === 'income' ? !isIncome : isIncome) continue
     const hits = words.filter((w) => text.includes(w)).length
     if (hits > bestHits) {
       bestHits = hits

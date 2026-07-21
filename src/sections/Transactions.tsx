@@ -27,10 +27,21 @@ export default function Transactions() {
       .sort((a, b) => b.date.localeCompare(a.date))
   }, [state.transactions, query, memberFilter])
 
+  const [importError, setImportError] = useState<string | null>(null)
+
   const importFile = async (file: File) => {
-    const text = await file.text()
-    const txs = fromCSV(text, state.members[0]?.id ?? '')
-    if (txs.length) dispatch({ kind: 'importTx', txs })
+    setImportError(null)
+    try {
+      const text = await file.text()
+      const txs = fromCSV(text, state.members[0]?.id ?? '')
+      if (!txs.length) {
+        setImportError('No valid rows found. Expected header: date,type,amount,category,note')
+        return
+      }
+      dispatch({ kind: 'importTx', txs })
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'Import failed. Please check the CSV format.')
+    }
   }
 
   return (
@@ -54,9 +65,13 @@ export default function Transactions() {
             <Upload className="h-4 w-4 mr-1" /> Import
           </Button>
           <input ref={fileRef} type="file" accept=".csv" className="hidden"
-            onChange={(e) => { const f = e.target.files?.[0]; if (f) importFile(f); e.target.value = '' }} />
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) void importFile(f); e.target.value = '' }} />
         </div>
       </div>
+
+      {importError && (
+        <div className="text-sm text-destructive px-1" role="alert">{importError}</div>
+      )}
 
       <Card>
         <CardContent className="p-0">

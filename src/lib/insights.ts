@@ -14,8 +14,9 @@ function sumBy(txs: Transaction[], month: string, type: 'expense' | 'income'): n
 
 function prevMonthKey(month: string): string {
   const [y, m] = month.split('-').map(Number)
-  const d = new Date(y, m - 2, 1)
-  return d.toISOString().slice(0, 7)
+  const py = m === 1 ? y - 1 : y
+  const pm = m === 1 ? 12 : m - 1
+  return `${py}-${String(pm).padStart(2, '0')}`
 }
 
 export function spendByCategory(txs: Transaction[], month: string): Record<string, number> {

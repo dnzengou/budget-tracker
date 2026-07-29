@@ -1,0 +1,45 @@
+{
+  "name": "claude-skills",
+  "displayName": "Claude Skills",
+  "description": "ARM, RRSS, KafCa, KafCade, DevFlow, Evolve — composable Claude skill prompts as VS Code commands.",
+  "version": "0.1.0",
+  "publisher": "dnzengou",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dnzengou/claude-skills-sdk"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other", "Snippets"],
+  "main": "./dist/extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "commands": [
+      { "command": "claudeSkills.insert", "title": "Claude Skills: Insert Skill Prompt" },
+      { "command": "claudeSkills.compose", "title": "Claude Skills: Compose Multiple Skills" },
+      { "command": "claudeSkills.list", "title": "Claude Skills: List Bundled Skills" }
+    ],
+    "configuration": {
+      "title": "Claude Skills",
+      "properties": {
+        "claudeSkills.defaultStack": {
+          "type": "array",
+          "default": ["kafca", "rrss"],
+          "description": "Skills auto-composed when running 'Insert Default Stack'."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "prebuild": "node -e \"import('node:fs/promises').then(fs=>fs.cp('../../skills','./skills',{recursive:true,force:true}))\"",
+    "build": "tsc",
+    "vscode:prepublish": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.5.0"
+  }
+}

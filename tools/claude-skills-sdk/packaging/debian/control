@@ -1,0 +1,10 @@
+Package: claude-skills
+Version: 0.1.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: dnzengou <noreply@dnzengou.dev>
+Description: Distributable Claude skill bundle CLI
+ ARM, RRSS, KafCa, KafCade, DevFlow, Evolve composable skill prompts
+ for Claude / GPT / Gemini / local LLMs. Single static binary.
+Homepage: https://github.com/dnzengou/claude-skills-sdk

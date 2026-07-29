@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evoforge"
+version = "0.1.0"
+description = "Evolutionary Agent Platform - Fusion of Agno + SuperAGI with self-improving capabilities"
+authors = [{name = "EvoForge Team"}]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "pydantic>=2.0",
+    "fastapi",
+    "uvicorn",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "ruff"]
+full = ["openai", "anthropic", "tiktoken"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+evo-forge = "evoforge.cli:main"

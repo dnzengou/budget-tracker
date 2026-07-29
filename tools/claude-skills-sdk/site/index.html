@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Claude Skills SDK · ARM · RRSS · KafCa · KafCade · DevFlow · Evolve</title>
+<meta name="description" content="Distributable Claude skill bundle — Python, JS, Go SDKs, Rust CLI, VS Code + Chrome extensions, Android APK, Docker." />
+<style>
+  :root {
+    --bg: #0b0d10;
+    --fg: #e5e7eb;
+    --muted: #9ca3af;
+    --accent: #2563eb;
+    --card: #111827;
+    --border: #1f2937;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.55 system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 48px 24px; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 64px; }
+  .logo { font-weight: 700; letter-spacing: -0.02em; font-size: 18px; }
+  nav a { color: var(--muted); margin-left: 24px; text-decoration: none; font-size: 14px; }
+  nav a:hover { color: var(--fg); }
+  h1 { font-size: 56px; line-height: 1.05; letter-spacing: -0.03em; margin: 0 0 16px; }
+  .tag { color: var(--muted); font-size: 18px; max-width: 640px; }
+  .pillrow { display: flex; flex-wrap: wrap; gap: 8px; margin: 32px 0; }
+  .pill { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .install { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; margin: 32px 0; overflow-x: auto; }
+  .install b { color: var(--accent); font-weight: 500; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 64px 0; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .card h3 { margin: 0 0 8px; font-size: 16px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; }
+  .card code { background: var(--bg); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+  footer { margin-top: 96px; padding-top: 32px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">Claude Skills <span style="color: var(--muted); font-weight: 400;">SDK</span></div>
+    <nav>
+      <a href="https://github.com/dnzengou/claude-skills-sdk">GitHub</a>
+      <a href="#install">Install</a>
+      <a href="#channels">Channels</a>
+    </nav>
+  </header>
+
+  <h1>Six composable skills.<br/>Eight ways to ship them.</h1>
+  <p class="tag">ARM, RRSS, KafCa, KafCade, DevFlow, Evolve — bundled as Python &amp; JS &amp; Go SDKs, a Rust CLI, VS Code &amp; Chrome extensions, an Android APK, and a Docker image. Same skill content, every channel.</p>
+
+  <div class="pillrow">
+    <div class="pill">arm</div>
+    <div class="pill">rrss</div>
+    <div class="pill">kafca</div>
+    <div class="pill">kafcade</div>
+    <div class="pill">devflow</div>
+    <div class="pill">evolve</div>
+  </div>
+
+  <div id="install" class="install">
+<b>$</b> pip install claude-skills<br/>
+<b>$</b> npm i @claude-skills/core<br/>
+<b>$</b> go get github.com/dnzengou/claude-skills-sdk/sdk/go<br/>
+<b>$</b> curl -fsSL https://claude-skills.vercel.app/install.sh | sh<br/>
+<b>$</b> docker run ghcr.io/dnzengou/claude-skills-sdk list
+  </div>
+
+  <div id="channels" class="grid">
+    <div class="card"><h3>Python SDK</h3><p><code>pip install claude-skills</code> · Anthropic + OpenAI shims included.</p></div>
+    <div class="card"><h3>JS / TS SDK</h3><p><code>@claude-skills/core</code> · ESM, types, CLI bin.</p></div>
+    <div class="card"><h3>Go module</h3><p><code>go get</code> · skills embedded via <code>go:embed</code>.</p></div>
+    <div class="card"><h3>Rust CLI</h3><p>Single static binary · linux/macos/windows × amd64/arm64.</p></div>
+    <div class="card"><h3>VS Code extension</h3><p>Insert / compose skills inside any editor.</p></div>
+    <div class="card"><h3>Chrome extension</h3><p>Inject into Claude.ai / ChatGPT / Gemini composer.</p></div>
+    <div class="card"><h3>Android APK</h3><p>Tauri 2 · sideloadable from GitHub Releases.</p></div>
+    <div class="card"><h3>Docker (GHCR)</h3><p>Multi-arch · ARM64 native · <code>ghcr.io/dnzengou/claude-skills-sdk</code>.</p></div>
+  </div>
+
+  <footer>
+    v0.1.0 · MIT · <a href="https://github.com/dnzengou/claude-skills-sdk">github.com/dnzengou/claude-skills-sdk</a> · evolved by EvoMetaClaw 2026-06-22
+  </footer>
+</div>
+</body>
+</html>

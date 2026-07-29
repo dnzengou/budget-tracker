@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Claude Skills",
+  "version": "0.1.0",
+  "description": "Inject ARM, RRSS, KafCa, KafCade, DevFlow, Evolve skill prompts into Claude.ai / ChatGPT / Gemini.",
+  "permissions": ["activeTab", "storage", "clipboardWrite"],
+  "host_permissions": [
+    "https://claude.ai/*",
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://gemini.google.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Claude Skills"
+  },
+  "icons": {
+    "128": "icon128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["skills/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

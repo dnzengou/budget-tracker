@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "claude-skills"
+version = "0.1.0"
+description = "Distributable skill bundle for Claude / GPT / Gemini / local LLMs — ARM, RRSS, KafCa, KafCade, DevFlow, Evolve."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "dnzengou" }]
+keywords = ["llm", "claude", "openai", "skills", "devflow", "kafca", "kafcade", "arm", "rrss", "evolve"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Libraries",
+]
+dependencies = []
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.40.0"]
+openai = ["openai>=1.50.0"]
+all = ["anthropic>=0.40.0", "openai>=1.50.0"]
+
+[project.scripts]
+claude-skills = "claude_skills.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/dnzengou/claude-skills-sdk"
+Repository = "https://github.com/dnzengou/claude-skills-sdk"
+Issues = "https://github.com/dnzengou/claude-skills-sdk/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/claude_skills"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"../../skills" = "claude_skills/_skills"

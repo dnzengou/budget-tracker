@@ -1,0 +1,23 @@
+{
+  "version": "0.1.0",
+  "description": "Distributable Claude skill bundle CLI — ARM, RRSS, KafCa, KafCade, DevFlow, Evolve.",
+  "homepage": "https://github.com/dnzengou/claude-skills-sdk",
+  "license": "MIT",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/dnzengou/claude-skills-sdk/releases/download/v0.1.0/claude-skills-x86_64-pc-windows-msvc.exe",
+      "hash": "REPLACE_AT_RELEASE_TIME",
+      "bin": [["claude-skills-x86_64-pc-windows-msvc.exe", "claude-skills"]]
+    }
+  },
+  "checkver": {
+    "github": "https://github.com/dnzengou/claude-skills-sdk"
+  },
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/dnzengou/claude-skills-sdk/releases/download/v$version/claude-skills-x86_64-pc-windows-msvc.exe"
+      }
+    }
+  }
+}

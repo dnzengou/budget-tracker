@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Claude Skills</title>
+  <style>
+    body { font: 13px/1.4 system-ui, sans-serif; width: 320px; margin: 0; padding: 12px; background: #0b0d10; color: #e5e7eb; }
+    h1 { margin: 0 0 8px; font-size: 14px; }
+    button { display: block; width: 100%; margin: 4px 0; padding: 8px; background: #1f2937; color: #e5e7eb; border: 1px solid #374151; border-radius: 6px; cursor: pointer; text-align: left; }
+    button:hover { background: #374151; }
+    .row { display: flex; gap: 4px; }
+    .row label { flex: 1; padding: 6px 8px; background: #111827; border: 1px solid #374151; border-radius: 4px; font-size: 12px; cursor: pointer; }
+    .row label.on { background: #2563eb; border-color: #2563eb; }
+  </style>
+</head>
+<body>
+  <h1>Claude Skills</h1>
+  <div id="picker" class="row"></div>
+  <button id="inject">Inject composed prompt</button>
+  <button id="copy">Copy to clipboard</button>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+{
+  "name": "@claude-skills/core",
+  "version": "0.1.0",
+  "description": "Distributable skill bundle for Claude / GPT / Gemini / local LLMs — ARM, RRSS, KafCa, KafCade, DevFlow, Evolve.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "claude-skills": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "skills"
+  ],
+  "scripts": {
+    "prebuild": "node -e \"import('node:fs/promises').then(fs=>fs.cp('../../skills','./skills',{recursive:true,force:true}))\"",
+    "build": "tsc",
+    "test": "node --test dist/*.test.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["llm", "claude", "openai", "skills", "devflow", "kafca", "kafcade", "arm", "rrss", "evolve"],
+  "author": "dnzengou",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dnzengou/claude-skills-sdk.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}

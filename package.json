@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "skills:list": "ls .claude/skills",
+    "skills:sync": "sh tools/claude-skills-sdk/scripts/sync-skills.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

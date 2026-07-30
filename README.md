@@ -39,6 +39,35 @@ below are optional; defaults preserve legacy dev credentials.
 | `VITE_ADMIN_PASSWORD`   | `admin123`  | Login password for Admin role    |
 | `VITE_GUEST_PASSWORD`   | `guest`     | Login password for Guest role    |
 
+## Login credentials
+
+Two roles ship with the app. Defaults are the dev values above; the deployed
+site uses whatever `VITE_*` values were present at build time.
+
+| Role   | Username | Password (default) | Capabilities                                    |
+| ------ | -------- | ------------------ | ----------------------------------------------- |
+| Admin  | `admin`  | `admin123`         | Add / edit / delete transactions, reset data    |
+| Guest  | `guest`  | `guest`            | Read-only view of dashboard, budgets, insights  |
+
+The username field is a display label only — matching happens against the
+password alone, so any username works with the correct password.
+
+### Retrieving credentials
+
+Once logged in as Admin, click the **key icon** in the header to open the
+**Login credentials** dialog. It lists both usernames and passwords with
+one-click copy buttons — useful for handing the guest password to a viewer.
+
+### Rotating credentials
+
+1. In the Vercel project settings, set (or update)
+   `VITE_ADMIN_PASSWORD` and `VITE_GUEST_PASSWORD` under **Environment
+   Variables**.
+2. Redeploy — Vite bakes the new values into the client bundle at build time.
+3. Because the values live in the bundled JavaScript, anyone who inspects the
+   deployed JS can read them. Treat them as access hints, not real secrets.
+   Don't reuse a password from any other system.
+
 ## Deploy
 
 Push to `main` → Vercel auto-detects Vite and rebuilds. Security headers

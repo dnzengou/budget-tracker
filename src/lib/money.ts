@@ -1,4 +1,4 @@
-export const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'BRL']
+export const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'BRL', 'SEK', 'RWF', 'KES', 'XAF']
 
 export function fmt(cents: number, currency: string): string {
   return new Intl.NumberFormat(undefined, {

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RotateCcw, LogIn, LogOut } from 'lucide-react'
+import CredentialsDialog from '@/components/CredentialsDialog'
 import AddTransaction from '@/sections/AddTransaction'
 import Budgets from '@/sections/Budgets'
 import Dashboard from '@/sections/Dashboard'
@@ -109,6 +110,9 @@ export default function Home() {
             </p>
           </div>
           {state.auth.isAdmin && <AddTransaction />}
+          {state.auth.isAdmin && (
+            <CredentialsDialog adminPassword={ADMIN_PASSWORD} guestPassword={GUEST_PASSWORD} />
+          )}
           {state.auth.isAdmin && (
             <AlertDialog>
               <AlertDialogTrigger asChild>

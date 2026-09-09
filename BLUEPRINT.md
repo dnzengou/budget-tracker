@@ -1,7 +1,7 @@
 # NestEgg — Product Blueprint
 
-**Version:** 0.3.0
-**Updated:** 2026-08-10
+**Version:** 0.4.0
+**Updated:** 2026-09-09
 **Live site:** _pending Vercel wiring_
 **Repo:** https://github.com/dnzengou/budget-tracker
 
@@ -97,17 +97,23 @@ buttons for both rows.
 - ✅ README + BLUEPRINT sections documenting credential retrieval + rotation
   (v0.3.0)
 
+- ✅ Chunk-budget: `manualChunks` splits vendor into charts/radix/router/icons/
+  dates/vendor — app chunk drops from **810 KB → 43 KB** (13 KB gzip). Total
+  size similar but cache-separable across deploys (v0.4.0)
+- ✅ Deleted dead `src/components/ui/sidebar.tsx` +
+  `src/hooks/use-mobile.ts` (v0.4.0)
+- ✅ Login rate limiting: 5 failed attempts → 30 s in-memory cooldown with
+  live countdown; inputs disabled during cooldown (v0.4.0)
+
 ### Next up
 
-- 🔲 Chunk-budget: split recharts + radix vendor bundle (currently 849 KB /
-  252 KB gzip after credentials dialog — up from 810 / 241; kafcade v2.7 flag)
 - 🔲 CSV importer: quoted-note support (`"note, with comma"`) + skipped-row
   count feedback (E audit P1)
 - 🔲 Zod schema validation for `load()` output (E audit P1)
 - 🔲 Debounce `localStorage.setItem` on rapid dispatch (E audit P2)
 - 🔲 Stable keys on list rows (Insights, Dashboard `<Cell>`, Onboarding people)
-- 🔲 Delete dead `src/components/ui/sidebar.tsx` + `src/hooks/use-mobile.ts`
-- 🔲 Password hashing (SubtleCrypto SHA-256) + rate limiting on login attempts
+- 🔲 Password hashing (SubtleCrypto SHA-256) — marginal for browser-only app
+  where source ships in bundle; deprioritize until backend
 - 🔲 PWA: manifest + offline shell + install prompt
 - 🔲 Multi-language (i18n) — string extraction pass
 
@@ -140,6 +146,8 @@ src/
     ui/                 — shadcn/ui components (Radix wrappers) incl. sonner Toaster
   types/                — shared TS types
 
+vite.config.ts          — manualChunks split: charts / radix / router / icons / dates / vendor
+
 .claude/skills/         — 9 embedded skills (arm, rrss, kafca, kafcade, devflow, evolve,
                           evolved-skillopt-v2/v3-agentic/v4-bio), each as `<name>/SKILL.md`
 tools/
@@ -152,6 +160,39 @@ tools/
 ---
 
 ## Changelog
+
+### v0.4.0 — 2026-09-09
+
+**Perf (chunk-budget split — `vite.config.ts`):**
+- `build.rollupOptions.output.manualChunks` splits `node_modules` into named
+  chunks: `charts` (recharts + d3), `radix`, `router`, `icons` (lucide-react),
+  `dates` (date-fns), and a catch-all `vendor`. App chunk drops from **810 KB →
+  43 KB** (from 241 KB gzip → 13 KB); total wire cost is similar per cold
+  visit but each subsequent deploy touches only the small app chunk while
+  vendor chunks stay cached. Warning threshold lifted to 600 KB — no chunk
+  exceeds it now.
+
+**Cleanup — Consolidate (C):**
+- Removed dead `src/components/ui/sidebar.tsx` and `src/hooks/use-mobile.ts`
+  (imported only by each other; no consumer in `src/`).
+
+**Security (rate limit) — `src/pages/Home.tsx`:**
+- 5 failed login attempts in one tab trigger a 30 s in-memory cooldown.
+  Counter and cooldown are module-scoped so they survive component remounts
+  but reset on page reload — good enough for a browser-only app where the
+  JS itself is trusted (defense-in-depth against enum + scripted brute-force,
+  not a real auth boundary).
+- Error label uses `role="alert"` and reports remaining attempts inline.
+  During cooldown the username / password inputs and the Login button are
+  disabled, and the button label shows a live `Locked (Ns)` countdown.
+
+**Verified:**
+- `npm run build` clean; no chunk exceeds 600 KB warning threshold.
+- ESLint clean on touched files.
+- Headless Chromium: five wrong passwords produce the exact countdown
+  sequence "4/3/2/1 attempt(s) left" → "Too many attempts. Try again in 30s";
+  button shows `Locked (30s)` → `Locked (29s)` a second later; button is
+  disabled during the lock.
 
 ### v0.3.0 — 2026-08-10
 

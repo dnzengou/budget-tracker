@@ -15,13 +15,29 @@ import Insights from '@/sections/Insights'
 import Onboarding from '@/sections/Onboarding'
 import Transactions from '@/sections/Transactions'
 import { useStore } from '@/lib/store'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+// In-memory rate limit: 5 failed attempts trigger a 30 s cooldown. Module-scoped
+// so it survives component remounts within the same tab, but resets on reload —
+// good enough for a browser-only app where the JS itself is untrusted anyway.
+const MAX_ATTEMPTS = 5
+const COOLDOWN_MS = 30_000
+let failedAttempts = 0
+let cooldownUntil = 0
 
 export default function Home() {
   const { state, dispatch } = useStore()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [lockedUntil, setLockedUntil] = useState(0)
+  const [now, setNow] = useState(() => Date.now())
+
+  useEffect(() => {
+    if (lockedUntil <= now) return
+    const t = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(t)
+  }, [lockedUntil, now])
 
   // Demo-only credentials: the app runs entirely in the browser with localStorage,
   // so there's no server to authenticate against. Values must live at build-time
@@ -31,16 +47,36 @@ export default function Home() {
   const GUEST_PASSWORD = import.meta.env.VITE_GUEST_PASSWORD ?? 'guest'
 
   const handleLogin = () => {
+    const t = Date.now()
+    if (t < cooldownUntil) {
+      setLockedUntil(cooldownUntil)
+      setNow(t)
+      setError(`Too many attempts. Try again in ${Math.ceil((cooldownUntil - t) / 1000)}s.`)
+      return
+    }
     if (password === ADMIN_PASSWORD) {
+      failedAttempts = 0
+      cooldownUntil = 0
       dispatch({ kind: 'login', isAdmin: true, username: username || 'Admin' })
-      setPassword('')
-      setError('')
-    } else if (password === GUEST_PASSWORD) {
+      setPassword(''); setError(''); setLockedUntil(0)
+      return
+    }
+    if (password === GUEST_PASSWORD) {
+      failedAttempts = 0
+      cooldownUntil = 0
       dispatch({ kind: 'login', isAdmin: false, username: username || 'Guest' })
-      setPassword('')
-      setError('')
+      setPassword(''); setError(''); setLockedUntil(0)
+      return
+    }
+    failedAttempts += 1
+    if (failedAttempts >= MAX_ATTEMPTS) {
+      cooldownUntil = t + COOLDOWN_MS
+      failedAttempts = 0
+      setLockedUntil(cooldownUntil)
+      setNow(t)
+      setError(`Too many attempts. Try again in ${Math.ceil(COOLDOWN_MS / 1000)}s.`)
     } else {
-      setError('Invalid credentials.')
+      setError(`Invalid credentials. ${MAX_ATTEMPTS - failedAttempts} attempt(s) left.`)
     }
   }
 
@@ -52,6 +88,8 @@ export default function Home() {
 
   // If not logged in, show login prompt
   if (!state.auth.isLoggedIn) {
+    const locked = lockedUntil > now
+    const secondsLeft = locked ? Math.ceil((lockedUntil - now) / 1000) : 0
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <div className="w-full max-w-md">
@@ -68,6 +106,7 @@ export default function Home() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter username"
+                disabled={locked}
               />
             </div>
             <div>
@@ -78,12 +117,14 @@ export default function Home() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                onKeyDown={(e) => e.key === 'Enter' && !locked && handleLogin()}
+                disabled={locked}
               />
             </div>
-            {error && <p className="text-destructive text-sm">{error}</p>}
-            <Button onClick={handleLogin} className="w-full" size="lg">
-              <LogIn className="mr-2 h-4 w-4" /> Login
+            {error && <p className="text-destructive text-sm" role="alert">{error}</p>}
+            <Button onClick={handleLogin} className="w-full" size="lg" disabled={locked}>
+              <LogIn className="mr-2 h-4 w-4" />
+              {locked ? `Locked (${secondsLeft}s)` : 'Login'}
             </Button>
             <p className="text-xs text-center text-muted-foreground">
               Guest mode: View only • Admin: Full access<br />

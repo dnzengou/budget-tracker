@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { User, Users, Baby, Plus, X } from 'lucide-react'
+import { User, Users, Baby, Plus, X, ChevronDown, ChevronUp } from 'lucide-react'
+import GuideContent from '@/components/GuideContent'
 import { MEMBER_COLORS, uid, useStore } from '@/lib/store'
 import { CURRENCIES } from '@/lib/money'
 import type { Member, Mode } from '@/types'
@@ -20,6 +21,7 @@ export default function Onboarding() {
   const [mode, setMode] = useState<Mode>('individual')
   const [currency, setCurrency] = useState('USD')
   const [names, setNames] = useState<string[]>([''])
+  const [showGuide, setShowGuide] = useState(false)
 
   const setName = (i: number, value: string) => {
     const next = [...names]
@@ -101,6 +103,21 @@ export default function Onboarding() {
           </div>
 
           <Button className="w-full" size="lg" onClick={start}>Start tracking</Button>
+
+          <button
+            type="button"
+            onClick={() => setShowGuide((v) => !v)}
+            className="w-full flex items-center justify-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            aria-expanded={showGuide}
+          >
+            {showGuide ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+            {showGuide ? 'Hide tour' : 'Tell me more first'}
+          </button>
+          {showGuide && (
+            <div className="pt-2 border-t">
+              <GuideContent />
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

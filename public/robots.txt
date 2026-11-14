@@ -1,0 +1,76 @@
+# robots.txt — NestEgg
+# https://nestegg.vercel.app/
+
+# ─── Classic search engines ───────────────────────────────────────────
+User-agent: *
+Allow: /
+Sitemap: https://nestegg.vercel.app/sitemap.xml
+
+# ─── AI agents / LLM crawlers ─────────────────────────────────────────
+# NestEgg is a privacy-first product; the shipped code & docs are public
+# and we WELCOME AI agents indexing them. Private user data lives only in
+# each visitor's browser and is never served from this origin.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: MistralAI-User
+Allow: /
+
+# Pointers for agents that read these:
+# /llms.txt           — short overview optimised for LLM ingestion
+# /llms-full.txt      — long-form overview including full feature docs
+# /.well-known/ai-plugin.json — plugin / agent-manifest descriptor
+# /manifest.webmanifest — PWA install metadata
+# /sitemap.xml        — crawlable URL list

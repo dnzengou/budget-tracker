@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RotateCcw, LogIn, LogOut } from 'lucide-react'
 import CredentialsDialog from '@/components/CredentialsDialog'
+import HelpDialog from '@/components/HelpDialog'
+import PwaInstallButton from '@/components/PwaInstallButton'
 import AddTransaction from '@/sections/AddTransaction'
 import Budgets from '@/sections/Budgets'
 import Dashboard from '@/sections/Dashboard'
@@ -96,7 +98,7 @@ export default function Home() {
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">🪺</div>
             <h1 className="text-4xl font-bold">NestEgg</h1>
-            <p className="text-muted-foreground mt-2">AI-Powered Private Budget Tracker</p>
+            <p className="text-muted-foreground mt-2">Private, offline budget tracker</p>
           </div>
           <div className="bg-card border rounded-xl p-8 space-y-6">
             <div>
@@ -130,6 +132,10 @@ export default function Home() {
               Guest mode: View only • Admin: Full access<br />
               Data stays in your browser. No cloud.
             </p>
+            <div className="flex items-center justify-center gap-2 pt-1 -mb-2">
+              <HelpDialog />
+              <PwaInstallButton />
+            </div>
           </div>
         </div>
       </div>
@@ -151,6 +157,8 @@ export default function Home() {
             </p>
           </div>
           {state.auth.isAdmin && <AddTransaction />}
+          <PwaInstallButton />
+          <HelpDialog />
           {state.auth.isAdmin && (
             <CredentialsDialog adminPassword={ADMIN_PASSWORD} guestPassword={GUEST_PASSWORD} />
           )}

@@ -3,10 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NestEgg — Budget & Expense Tracker</title>
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="light dark" />
+
+    <title>NestEgg — Private Budget & Expense Tracker</title>
+    <meta name="description" content="Private, offline-first budget and expense tracker. All data stays in your browser — no accounts, no cloud, no telemetry. Multi-currency, household splits, auto-categorization, CSV import/export." />
+    <meta name="keywords" content="budget tracker, expense tracker, personal finance, household budget, offline budget app, privacy-first finance, CSV budget import, PWA budget tracker" />
+    <meta name="author" content="desiredsolutions.me" />
+    <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large" />
+    <link rel="canonical" href="https://nestegg.vercel.app/" />
+
+    <!-- Progressive Web App -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+
+    <!-- Open Graph (Facebook, LinkedIn, Slack previews) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="NestEgg" />
+    <meta property="og:title" content="NestEgg — Private Budget & Expense Tracker" />
+    <meta property="og:description" content="Track household income and expenses with zero accounts, zero cloud. Opens instantly, works offline, exports to CSV." />
+    <meta property="og:image" content="https://nestegg.vercel.app/og-image.png" />
+    <meta property="og:url" content="https://nestegg.vercel.app/" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="NestEgg — Private Budget & Expense Tracker" />
+    <meta name="twitter:description" content="Private, offline-first budget tracking. No accounts, no cloud, no tracking." />
+    <meta name="twitter:image" content="https://nestegg.vercel.app/og-image.png" />
+
+    <!-- AI agents: see /llms.txt and /.well-known/ai-plugin.json for structured answers -->
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable summary" />
+    <meta name="ai-content-declaration" content="human-authored" />
+
+    <!-- Schema.org SoftwareApplication (JSON-LD) — crawlable by Google, Bing, and AI agents -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "NestEgg",
+      "description": "Private, offline-first budget and expense tracker. All data stays in the user's browser.",
+      "url": "https://nestegg.vercel.app/",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any (browser-based PWA)",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "featureList": [
+        "Offline-first — no server, no account",
+        "Multi-currency (14 ISO codes incl. SEK, RWF, KES, XAF)",
+        "Household mode with per-member split",
+        "Auto-categorization from note keywords",
+        "CSV import + export (round-trip)",
+        "Per-category budgets with pressure insights",
+        "6-month trend dashboard",
+        "Deterministic rule-based insights"
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "desiredsolutions.me",
+        "url": "https://desiredsolutions.me"
+      },
+      "license": "https://opensource.org/licenses/MIT"
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <main style="font-family:system-ui;padding:2rem;max-width:40rem;margin:auto">
+        <h1>NestEgg — Private Budget Tracker</h1>
+        <p>This app runs entirely in your browser. Enable JavaScript to use it.</p>
+        <p>For machine-readable info: <a href="/llms.txt">/llms.txt</a>,
+        <a href="/manifest.webmanifest">/manifest.webmanifest</a>.</p>
+      </main>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

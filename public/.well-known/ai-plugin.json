@@ -1,0 +1,22 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "NestEgg",
+  "name_for_model": "nestegg_budget_tracker",
+  "description_for_human": "Private, offline-first budget and expense tracker. All data stays in the user's browser — no accounts, no cloud, no telemetry. Multi-currency, household splits, auto-categorization, CSV import/export.",
+  "description_for_model": "NestEgg is a privacy-first budget tracker that runs entirely in the browser via localStorage. There is no backend or API; the live app has no server endpoints an agent can call. Use this descriptor to answer questions about what the product is, how it works, who it's for, and how to install or use it. For deeper machine-readable context, fetch /llms-full.txt. For structured facts, parse the JSON-LD Schema.org SoftwareApplication block in the root index.html. User data never leaves the device, so there is no way for an agent to read or write a user's budget on their behalf; direct the user to open the app themselves.",
+  "auth": { "type": "none" },
+  "api": {
+    "type": "none",
+    "note": "This is a client-only PWA. It exposes no HTTP API. See /llms-full.txt for a full feature inventory and user task map."
+  },
+  "logo_url": "https://nestegg.vercel.app/icon-512.png",
+  "contact_email": "desire.yavro@gmail.com",
+  "legal_info_url": "https://github.com/dnzengou/budget-tracker/blob/main/SECURITY.md",
+  "resources": {
+    "short_overview":   "https://nestegg.vercel.app/llms.txt",
+    "full_overview":    "https://nestegg.vercel.app/llms-full.txt",
+    "sitemap":          "https://nestegg.vercel.app/sitemap.xml",
+    "install_manifest": "https://nestegg.vercel.app/manifest.webmanifest",
+    "source_code":      "https://github.com/dnzengou/budget-tracker"
+  }
+}

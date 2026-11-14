@@ -1,6 +1,6 @@
 # NestEgg
 
-**AI-adjacent, privacy-first budget & expense tracker.** All data stays in
+**Private, offline-first budget & expense tracker.** All data stays in
 your browser — no accounts, no server, no telemetry.
 
 [![CI](https://github.com/dnzengou/budget-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/dnzengou/budget-tracker/actions/workflows/ci.yml)
@@ -15,6 +15,10 @@ your browser — no accounts, no server, no telemetry.
 - Deterministic rule-based insights (MoM swings, savings rate, recurring load)
 - CSV import + export (round-trip)
 - Two in-browser roles: **Admin** (read/write) · **Guest** (read-only)
+- Installable PWA with offline shell
+- In-app Help dialog + guided onboarding tour
+- Agents-enabled SEO (`/llms.txt`, `/.well-known/ai-plugin.json`, JSON-LD) —
+  discoverable by GPTBot, ClaudeBot, Perplexity, Google-Extended and friends
 
 ## Stack
 

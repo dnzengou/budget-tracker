@@ -1,7 +1,7 @@
 # NestEgg — Product Blueprint
 
-**Version:** 0.3.0
-**Updated:** 2026-08-10
+**Version:** 0.5.0
+**Updated:** 2026-11-14
 **Live site:** _pending Vercel wiring_
 **Repo:** https://github.com/dnzengou/budget-tracker
 
@@ -63,9 +63,10 @@ buttons for both rows.
 | GitHub Actions CI       | ✅ | `.github/workflows/ci.yml` — lint + build on PR + main |
 | CodeQL scanning         | ✅ | `.github/workflows/codeql.yml` — weekly + on PR |
 | Dependabot updates      | ✅ | `.github/dependabot.yml` — grouped, weekly |
-| Embedded Claude skills  | ✅ | `.claude/skills/*/SKILL.md` — 9 skills discoverable by Claude Code |
+| Embedded Claude skills  | ✅ | `.claude/skills/*/SKILL.md` — 10 skills discoverable by Claude Code |
 | Vendored dev tooling    | ✅ | `tools/claude-skills-sdk/`, `tools/evoforge/` — excluded via `.vercelignore` |
-| PWA (installable)       | 🔲 | manifest + service worker + offline shell |
+| PWA (installable)       | ✅ | `public/manifest.webmanifest` + icons + install button (v0.5.0) |
+| Agents-enabled SEO      | ✅ | `robots.txt`, `llms.txt`, `llms-full.txt`, `sitemap.xml`, `/.well-known/ai-plugin.json`, JSON-LD, OG + Twitter (v0.5.0) |
 | Native shell (Tauri)    | 🔲 | desktop/mobile bundles, sync via file export |
 
 ---
@@ -97,19 +98,48 @@ buttons for both rows.
 - ✅ README + BLUEPRINT sections documenting credential retrieval + rotation
   (v0.3.0)
 
+- ✅ Chunk-budget: `manualChunks` splits vendor into charts/radix/router/icons/
+  dates/vendor — app chunk drops from **810 KB → 43 KB** (13 KB gzip). Total
+  size similar but cache-separable across deploys (v0.4.0)
+- ✅ Deleted dead `src/components/ui/sidebar.tsx` +
+  `src/hooks/use-mobile.ts` (v0.4.0)
+- ✅ Login rate limiting: 5 failed attempts → 30 s in-memory cooldown with
+  live countdown; inputs disabled during cooldown (v0.4.0)
+
+- ✅ Dependency prune: removed 37 unused shadcn/ui components and their 27
+  underlying npm packages (@radix-ui/*, cmdk, vaul, embla, react-hook-form,
+  react-day-picker, …). CSS halved (72→30 KB gzip 12→6 KB). Install goes from
+  371→332 packages (v0.5.0).
+- ✅ Agents-enabled SEO kit: `/robots.txt` with 19 explicit AI-crawler
+  allowlists, `/llms.txt`, `/llms-full.txt`, `/sitemap.xml`,
+  `/.well-known/ai-plugin.json`, Schema.org JSON-LD + Open Graph + Twitter
+  Card in `index.html`. Vercel rewrites excluded via negative lookahead.
+  Packaged as a portable `.claude/skills/agents-enabled-seo` skill (v0.5.0).
+- ✅ Installable PWA: `public/manifest.webmanifest` + rasterized 192/512/
+  maskable icons + 1200×630 OG image; in-app `beforeinstallprompt` capture
+  with a Download header icon that self-hides when not offered (v0.5.0).
+- ✅ In-app Help dialog + onboarding "Tell me more first" expandable tour —
+  same 6-point `GuideContent` component reused in both places (v0.5.0).
+- ✅ Favicon: single-file SVG; theme-color + color-scheme meta; proper
+  `apple-touch-icon` + canonical URL + noscript fallback (v0.5.0).
+- ✅ Dropped `next-themes` in `sonner.tsx` (one fewer dep, no themer mounted
+  anyway); fixed login tagline accuracy — removed misleading "AI-Powered"
+  claim (v0.5.0).
+
 ### Next up
 
-- 🔲 Chunk-budget: split recharts + radix vendor bundle (currently 849 KB /
-  252 KB gzip after credentials dialog — up from 810 / 241; kafcade v2.7 flag)
 - 🔲 CSV importer: quoted-note support (`"note, with comma"`) + skipped-row
   count feedback (E audit P1)
 - 🔲 Zod schema validation for `load()` output (E audit P1)
 - 🔲 Debounce `localStorage.setItem` on rapid dispatch (E audit P2)
 - 🔲 Stable keys on list rows (Insights, Dashboard `<Cell>`, Onboarding people)
-- 🔲 Delete dead `src/components/ui/sidebar.tsx` + `src/hooks/use-mobile.ts`
-- 🔲 Password hashing (SubtleCrypto SHA-256) + rate limiting on login attempts
-- 🔲 PWA: manifest + offline shell + install prompt
+- 🔲 Service worker for genuine offline-after-first-load (currently works
+  offline only via browser disk cache; a SW would guarantee it)
+- 🔲 Password hashing (SubtleCrypto SHA-256) — marginal for browser-only app
+  where source ships in bundle; deprioritize until backend
 - 🔲 Multi-language (i18n) — string extraction pass
+- 🔲 Native shell (Tauri) — reuse the PWA bundle inside a desktop/mobile
+  wrapper for app-store distribution
 
 ---
 
@@ -137,11 +167,32 @@ src/
     utils.ts            — cn() and generic helpers
   components/
     CredentialsDialog.tsx — admin-only key-icon dialog exposing both role passwords + copy buttons
-    ui/                 — shadcn/ui components (Radix wrappers) incl. sonner Toaster
-  types/                — shared TS types
+    GuideContent.tsx      — shared 6-point explainer used by Onboarding + Help dialog
+    HelpDialog.tsx        — "?" icon → six-point tour + quick-tips footer, visible pre-login
+    PwaInstallButton.tsx  — captures beforeinstallprompt and surfaces a header install icon
+    ui/                   — pruned shadcn/ui set: alert, alert-dialog, button, card, dialog,
+                            input, label, progress, select, separator, sonner, switch, tabs,
+                            textarea (14 files; 37 unused removed in v0.5.0)
+  types/                  — shared TS types
 
-.claude/skills/         — 9 embedded skills (arm, rrss, kafca, kafcade, devflow, evolve,
-                          evolved-skillopt-v2/v3-agentic/v4-bio), each as `<name>/SKILL.md`
+public/                   — static SEO + PWA kit (served as-is by Vercel):
+  robots.txt              — AI-crawler allowlist (GPTBot, ClaudeBot, Perplexity, …) + sitemap link
+  llms.txt                — short LLM-first product summary
+  llms-full.txt           — long-form RAG-ingestable reference
+  sitemap.xml             — URL inventory incl. /llms.txt and /llms-full.txt
+  manifest.webmanifest    — PWA install manifest
+  .well-known/ai-plugin.json — agent-manifest descriptor
+  favicon.svg, icon-192.png, icon-512.png, icon-512-maskable.png, og-image.png (1200×630)
+
+index.html                — JSON-LD Schema.org SoftwareApplication, Open Graph, Twitter Card,
+                            theme-color, canonical, noscript fallback
+
+vite.config.ts            — manualChunks split: charts / radix / router / icons / dates / vendor
+vercel.json               — rewrite excludes static SEO/PWA endpoints; per-endpoint
+                            Content-Type + Cache-Control; CSP adds manifest-src
+
+.claude/skills/           — 10 embedded skills: arm, rrss, kafca, kafcade, devflow, evolve,
+                            evolved-skillopt-v2/v3-agentic/v4-bio, agents-enabled-seo
 tools/
   claude-skills-sdk/    — vendored ARM/RRSS/KafCa/KafCade/DevFlow/Evolve SDK snapshot
   evoforge/             — vendored EvoForge platform snapshot (Agno + SuperAGI + MetaClaw)
@@ -152,6 +203,128 @@ tools/
 ---
 
 ## Changelog
+
+### v0.5.0 — 2026-11-14
+
+**Trim — major dependency prune:**
+- Removed 37 unused shadcn/ui components and their 27 upstream npm packages:
+  @radix-ui/{accordion,aspect-ratio,avatar,checkbox,collapsible,context-menu,
+  dropdown-menu,hover-card,menubar,navigation-menu,popover,radio-group,
+  scroll-area,slider,toggle,toggle-group,tooltip}, @hookform/resolvers, cmdk,
+  date-fns, embla-carousel-react, input-otp, next-themes, react-day-picker,
+  react-hook-form, react-resizable-panels, vaul, zod.
+- `sonner.tsx` dropped `next-themes` (no `ThemeProvider` was mounted; the hook
+  returned the default `"system"` anyway).
+- CSS output halved: **72 KB → 30 KB** (12 KB gzip → 6 KB). Install goes
+  from 371 → 332 packages. No feature regressions.
+
+**Perf (v0.4.0 carried forward in this release):**
+- `vite.config.ts` `manualChunks` splits vendor into charts (recharts +
+  d3-*), radix, router, icons (lucide-react), dates (date-fns), and a
+  catch-all vendor. App chunk is 43 KB / 13 KB gzip. `chunkSizeWarningLimit`
+  lifted to 600 KB.
+
+**Add — Agents-enabled SEO kit:**
+- `public/robots.txt` — explicit allowlist for 19 AI user-agents (GPTBot,
+  ChatGPT-User, OAI-SearchBot, ClaudeBot, Claude-Web, Claude-SearchBot,
+  Google-Extended, GoogleOther, PerplexityBot, Perplexity-User,
+  Applebot-Extended, Amazonbot, Bytespider, cohere-ai, Meta-ExternalAgent,
+  Meta-ExternalFetcher, DuckAssistBot, YouBot, MistralAI-User).
+- `public/llms.txt` — short LLM-first canonical summary per the emerging
+  llms.txt standard.
+- `public/llms-full.txt` — long-form RAG-ingestable reference incl. data
+  model, security posture, personas, common tasks, explicit out-of-scope.
+- `public/sitemap.xml` — includes the LLM-readable files so AI crawlers
+  find them via discovery, not guessing.
+- `public/.well-known/ai-plugin.json` — agent-manifest descriptor.
+- `index.html` — JSON-LD Schema.org `SoftwareApplication`, Open Graph meta,
+  Twitter Card meta, theme-color, color-scheme, canonical, noscript
+  fallback, apple-touch-icon link, `ai-content-declaration: human-authored`,
+  alternate `text/plain` link to `/llms.txt`.
+- Packaged the entire kit as a portable
+  `.claude/skills/agents-enabled-seo/SKILL.md` — framework-agnostic, 9-piece
+  checklist, verification `curl` recipe, SPA rewrite workaround, audit
+  prompt.
+
+**Add — PWA install flow:**
+- `public/manifest.webmanifest` with `name`, `short_name`, display mode,
+  theme/background colors, `categories: [finance, productivity, lifestyle]`,
+  two `shortcuts` (Add transaction, Dashboard).
+- Rasterized icons: `icon-192.png`, `icon-512.png`, `icon-512-maskable.png`
+  (80% safe area, solid-bg theme match), plus `favicon.svg` and the
+  `og-image.png` 1200×630 social card — all generated via headless
+  Chromium from a single SVG source.
+- `src/components/PwaInstallButton.tsx` — captures the browser's
+  `beforeinstallprompt` event, shows a Download header icon when install
+  is offered, self-hides when the browser does not offer it or after
+  install; no library dependency.
+
+**Add — in-app Help / UX manual:**
+- `src/components/GuideContent.tsx` — shared six-point explainer (private
+  by default, household-aware, smart dashboard, CSV in/out, admin vs guest,
+  install as PWA).
+- `src/components/HelpDialog.tsx` — "?" icon in the header + login screen
+  opens a scrollable dialog with the guide and a quick-tips footer.
+- `src/sections/Onboarding.tsx` — new **Tell me more first** expander
+  reveals the same `GuideContent` under the Start-tracking button.
+
+**Harden — Vercel routing:**
+- `vercel.json` rewrite now uses a negative lookahead to exclude the SEO +
+  PWA static paths from the catch-all SPA rewrite (otherwise `/robots.txt`
+  returned `index.html`).
+- Per-endpoint `Content-Type` headers for `.webmanifest`,
+  `/.well-known/ai-plugin.json`, `llms*.txt`, `sitemap.xml`, `robots.txt`.
+- CSP extended with `manifest-src 'self'` for PWA compatibility.
+- `cleanUrls: true`, `trailingSlash: false`.
+
+**Copy fix:**
+- Login screen tagline: "AI-Powered Private Budget Tracker" →
+  "Private, offline budget tracker" (the app ships no AI; accurate
+  positioning preempts user confusion and passes LLM-fact-checking).
+
+**Verified:**
+- `npm run build` clean; no chunk > 600 KB; CSS 30 KB / 6 KB gzip.
+- Playwright headless Chromium end-to-end:
+  - onboarding "Tell me more first" expands the guide inline;
+  - Help dialog opens from the login screen and lists all six items;
+  - admin login works; header shows ?, 🔑, + Add, ↺, ↦ in that order;
+  - all 9 static endpoints return HTTP 200 with the expected
+    Content-Type (`text/plain`, `application/xml`, `application/json`,
+    `application/manifest+json`, `image/svg+xml`, `image/png`);
+  - no page errors.
+
+### v0.4.0 — 2026-09-09
+
+**Perf (chunk-budget split — `vite.config.ts`):**
+- `build.rollupOptions.output.manualChunks` splits `node_modules` into named
+  chunks: `charts` (recharts + d3), `radix`, `router`, `icons` (lucide-react),
+  `dates` (date-fns), and a catch-all `vendor`. App chunk drops from **810 KB →
+  43 KB** (from 241 KB gzip → 13 KB); total wire cost is similar per cold
+  visit but each subsequent deploy touches only the small app chunk while
+  vendor chunks stay cached. Warning threshold lifted to 600 KB — no chunk
+  exceeds it now.
+
+**Cleanup — Consolidate (C):**
+- Removed dead `src/components/ui/sidebar.tsx` and `src/hooks/use-mobile.ts`
+  (imported only by each other; no consumer in `src/`).
+
+**Security (rate limit) — `src/pages/Home.tsx`:**
+- 5 failed login attempts in one tab trigger a 30 s in-memory cooldown.
+  Counter and cooldown are module-scoped so they survive component remounts
+  but reset on page reload — good enough for a browser-only app where the
+  JS itself is trusted (defense-in-depth against enum + scripted brute-force,
+  not a real auth boundary).
+- Error label uses `role="alert"` and reports remaining attempts inline.
+  During cooldown the username / password inputs and the Login button are
+  disabled, and the button label shows a live `Locked (Ns)` countdown.
+
+**Verified:**
+- `npm run build` clean; no chunk exceeds 600 KB warning threshold.
+- ESLint clean on touched files.
+- Headless Chromium: five wrong passwords produce the exact countdown
+  sequence "4/3/2/1 attempt(s) left" → "Too many attempts. Try again in 30s";
+  button shows `Locked (30s)` → `Locked (29s)` a second later; button is
+  disabled during the lock.
 
 ### v0.3.0 — 2026-08-10
 

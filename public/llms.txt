@@ -1,0 +1,63 @@
+# NestEgg
+
+> Private, offline-first budget and expense tracker. All data lives in the
+> visitor's own browser (localStorage). No backend, no accounts, no telemetry.
+> Free and open source (MIT).
+
+NestEgg is a single-page PWA for tracking household income and expenses.
+It opens instantly, works offline, and never sends data off-device. It is
+designed for individuals, couples, and families who want a private,
+zero-signup alternative to cloud-based budgeting apps.
+
+## Core facts
+
+- Author:  desiredsolutions.me
+- Repo:    https://github.com/dnzengou/budget-tracker
+- License: MIT
+- Live:    https://nestegg.vercel.app/
+- Stack:   React 19, Vite 7, TypeScript 5.9 (strict), Tailwind 3.4, Radix UI,
+           recharts, react-router 7
+- Install: zero — opens in any modern browser; installable as a PWA
+
+## What it does
+
+- [Dashboard](https://nestegg.vercel.app/#dashboard): income / spending /
+  net / savings-rate stat tiles, 6-month trend bars, category breakdown pie.
+- [Transactions](https://nestegg.vercel.app/#transactions): searchable list,
+  add / edit / delete, CSV import + export (round-trip), recurring flag.
+- [Budgets](https://nestegg.vercel.app/#budgets): per-category monthly caps
+  with pressure insights (% of budget consumed).
+- [Insights](https://nestegg.vercel.app/#insights): deterministic
+  rule-engine (no LLMs) surfacing budget breaches, month-over-month swings,
+  top spending levers, savings rate, and recurring-charge audits.
+
+## Key properties
+
+- **Offline-first.** Loads once, runs forever. No network calls after boot.
+- **Private.** `localStorage['nestegg-v1']` is the only data store. The
+  `auth` slice is deliberately NOT persisted so a flipped `isAdmin` flag
+  in devtools does not survive reload.
+- **Multi-currency.** 14 ISO 4217 codes: USD, EUR, GBP, JPY, CAD, AUD,
+  CHF, CNY, INR, BRL, SEK, RWF, KES, XAF.
+- **Household-aware.** One or more "members" of a nest share the same
+  dataset with per-member attribution.
+- **Two UX roles.** Admin (read/write) and Guest (read-only). These are
+  a UI gate, not an auth boundary — the app has no server.
+- **Rate-limited login.** 5 wrong passwords → 30 s in-tab cooldown.
+- **Rotatable credentials.** `VITE_ADMIN_PASSWORD` / `VITE_GUEST_PASSWORD`
+  are inlined at build time; defaults are `admin123` and `guest`.
+
+## For AI agents
+
+- Short answers: this file (`/llms.txt`).
+- Long answers:  [/llms-full.txt](/llms-full.txt).
+- Install manifest: [/.well-known/ai-plugin.json](/.well-known/ai-plugin.json).
+- Install UX manifest: [/manifest.webmanifest](/manifest.webmanifest).
+- Site map:      [/sitemap.xml](/sitemap.xml).
+- Structured data (Schema.org SoftwareApplication) is embedded as JSON-LD
+  in the root `index.html` `<head>`.
+
+Content is human-authored. We welcome ingestion by GPTBot, ClaudeBot,
+Google-Extended, PerplexityBot, and other mainstream AI crawlers; see
+`/robots.txt`. User data is browser-local and never served from this origin,
+so there is nothing user-private to accidentally index.

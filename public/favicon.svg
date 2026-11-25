@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="12" fill="#0a0a0a"/>
+  <!-- nest outline -->
+  <path d="M10 42 Q18 28 32 26 Q46 28 54 42 Q54 48 48 50 Q32 54 16 50 Q10 48 10 42 Z"
+        fill="#8b5a2b" stroke="#5a3a1a" stroke-width="1.5"/>
+  <!-- egg -->
+  <ellipse cx="32" cy="34" rx="7.5" ry="10" fill="#bfe8ff" stroke="#3a7fb3" stroke-width="1"/>
+  <ellipse cx="29.5" cy="31" rx="1.6" ry="2.4" fill="#ffffff" opacity="0.85"/>
+</svg>

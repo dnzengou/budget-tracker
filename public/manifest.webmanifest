@@ -1,0 +1,23 @@
+{
+  "name": "NestEgg — Private Budget Tracker",
+  "short_name": "NestEgg",
+  "description": "Private, offline-first budget and expense tracker. All data stays in your browser.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0a0a0a",
+  "background_color": "#ffffff",
+  "lang": "en",
+  "categories": ["finance", "productivity", "lifestyle"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Add transaction", "short_name": "Add", "url": "/?action=add", "description": "Jump straight to the add-transaction dialog" },
+    { "name": "Dashboard", "short_name": "Dash", "url": "/?tab=dashboard" }
+  ]
+}

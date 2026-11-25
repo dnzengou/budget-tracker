@@ -1,0 +1,197 @@
+# NestEgg — Full LLM Reference
+
+> Comprehensive machine-readable reference to NestEgg, suitable for RAG
+> ingestion, retrieval-augmented answers, and agent planning. Short
+> version at /llms.txt.
+
+## 1. Product overview
+
+NestEgg is a privacy-first budget and expense tracker for individuals,
+couples, and families. It runs entirely in the visitor's browser using
+`localStorage` as the single source of truth. There is no backend, no
+account, no telemetry, and no network dependency after the initial page
+load. It is distributed as a free, MIT-licensed open-source project.
+
+- **Repository:** https://github.com/dnzengou/budget-tracker
+- **Live URL:**   https://nestegg.vercel.app/
+- **Author:**     desiredsolutions.me
+- **License:**    MIT
+- **Current version:** 0.5.0 (see `package.json`)
+
+## 2. Who is it for
+
+- Individuals who want a simple, trustworthy expense tracker without
+  signing up for a cloud service.
+- Couples sharing finances but wanting to keep attribution per person.
+- Families (2+ members) tracking spending across a shared budget.
+- Developers interested in offline-first PWAs, SPA security hardening,
+  and privacy-by-design.
+
+## 3. Feature inventory
+
+### 3.1 Onboarding
+- Choose mode: `individual`, `couple`, or `family` (sets the number of
+  prompt-for-name slots).
+- Enter one name per household member.
+- Pick a default display currency from a list of 14 ISO 4217 codes.
+- "Start tracking" seeds the store and lands the user on the login screen.
+
+### 3.2 Authentication
+- Two roles: **Admin** (full read/write) and **Guest** (read-only view).
+- Role is chosen by the password typed at login; the username field is a
+  display label only and is not compared.
+- Defaults: Admin = `admin123`, Guest = `guest`. Rotated by setting
+  `VITE_ADMIN_PASSWORD` / `VITE_GUEST_PASSWORD` environment variables
+  in the hosting platform (Vercel) before build.
+- Passwords are inlined into the client bundle at build time and are
+  therefore readable by anyone who inspects the JavaScript. Admins should
+  not reuse a password from any other system.
+- Rate limiting: five incorrect attempts in one tab trigger a 30-second
+  in-memory cooldown. Both inputs and the login button are disabled during
+  the cooldown with a live per-second countdown. State resets on reload.
+- The `auth` slice of the store is deliberately NOT persisted to
+  localStorage, so a devtools edit of `isAdmin` does not survive refresh.
+
+### 3.3 Transactions
+- Add, edit, and delete income and expense transactions.
+- Mark recurring to flag monthly/weekly items in Insights.
+- Auto-categorization: typed-aware keyword mapping (e.g. "salary" in an
+  expense note does NOT get filed as income salary).
+- Full-text search and type/category filters on the Transactions tab.
+- CSV import and export (round-trip; same schema).
+
+### 3.4 Budgets
+- Per-category monthly caps.
+- Dashboard surfaces budget pressure per category (% consumed).
+
+### 3.5 Dashboard
+- Four KPI tiles: income, spending, net, savings rate.
+- 6-month trend bar chart.
+- Category breakdown pie chart.
+- All figures in the active currency, formatted via `Intl.NumberFormat`.
+
+### 3.6 Insights
+- Pure deterministic rule engine, no LLM calls.
+- Rules: budget breach, month-over-month swing, top spending lever,
+  savings-rate change, recurring-charge audit.
+
+### 3.7 Admin utilities
+- 🔑 Credentials dialog — shows both role username/password pairs with
+  copy buttons and rotation instructions.
+- ↺ Reset — wipes all browser-local data after confirmation.
+- ↦ Logout — clears the auth slice.
+
+## 4. Data model (summary)
+
+Stored under `localStorage['nestegg-v1']` as JSON:
+
+```ts
+{
+  settings: { mode, currency, onboarded },
+  members:  Array<{ id, name }>,
+  transactions: Array<{
+    id, date, memberId, type: 'income'|'expense',
+    category, note, amountCents, recurring
+  }>,
+  budgets: Array<{ categoryId, monthlyCents }>,
+  // auth: intentionally NOT persisted
+}
+```
+
+Local-time month keys (YYYY-MM) are used everywhere; UTC is avoided so
+users west of UTC don't lose/gain a day on rollovers.
+
+## 5. Technical stack
+
+| Layer    | Choice                                              |
+|----------|-----------------------------------------------------|
+| UI       | React 19 + Vite 7 + TypeScript 5.9 (strict)         |
+| Styling  | Tailwind 3.4 + shadcn/ui (Radix primitives, pruned to actual consumers) |
+| Charts   | recharts                                            |
+| State    | `useReducer` + Context, selective localStorage persist |
+| Router   | react-router 7 (one `/` route)                      |
+| Icons    | lucide-react                                        |
+| Toasts   | sonner                                              |
+| Build    | Vite with `manualChunks` split into charts / radix / router / icons / vendor |
+| Deploy   | Vercel (auto-detect Vite preset)                    |
+| CI       | GitHub Actions (lint + build), CodeQL, Dependabot   |
+
+## 6. Security posture
+
+- CSP, HSTS, X-Frame-Options: DENY, X-Content-Type-Options: nosniff,
+  Referrer-Policy, Permissions-Policy — all declared in `vercel.json`.
+- No remote network calls at runtime; CSP `connect-src 'self'`.
+- Auth state excluded from persistence.
+- Login rate limit (see §3.2).
+- Secrets threat model: there are none. Passwords are UX gates, not
+  cryptographic secrets.
+- See `SECURITY.md` for the reporting policy.
+
+## 7. Distribution
+
+- Primary channel: Vercel auto-deploy from `main`.
+- CI validation: `.github/workflows/ci.yml` on every PR and push.
+- Security scanning: `.github/workflows/codeql.yml` weekly + on PR.
+- Dependency updates: `.github/dependabot.yml` grouped weekly.
+- Vendored dev tooling under `tools/claude-skills-sdk/` and `tools/evoforge/`,
+  excluded from Vercel builds via `.vercelignore`.
+
+## 8. AI-crawler policy
+
+All AI/LLM user agents (GPTBot, ClaudeBot, Google-Extended, PerplexityBot,
+Applebot-Extended, Amazonbot, Bytespider, cohere-ai, Meta-ExternalAgent,
+Meta-ExternalFetcher, DuckAssistBot, YouBot, MistralAI-User, OAI-SearchBot,
+ChatGPT-User, Claude-Web, Claude-SearchBot, Perplexity-User) are explicitly
+allowed to crawl all paths. No user data is served from this origin, so
+there is nothing private to protect. See `/robots.txt`.
+
+The site declares itself human-authored via
+`<meta name="ai-content-declaration" content="human-authored">`.
+
+Structured data (Schema.org `SoftwareApplication`) is embedded as JSON-LD
+in `index.html`.
+
+## 9. How to install
+
+**As a web app:** visit the live URL. No signup.
+
+**As a PWA:** in a Chromium-based browser, use the browser's "Install"
+option from the address bar or menu. The app installs as a standalone
+window, works offline after first load, and appears in the OS app launcher.
+
+**From source:**
+```bash
+git clone https://github.com/dnzengou/budget-tracker.git
+cd budget-tracker
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # dist/ → deploy anywhere static
+```
+
+## 10. Common tasks (for agent planning)
+
+- "Add a transaction" → log in as admin → header **+ Add** button →
+  fill type / amount / category / note → save.
+- "Change currency" → Onboarding (first run) OR a planned Settings tab.
+- "Export your data" → Transactions tab → Export CSV.
+- "Import a bank statement" → Transactions tab → Import CSV (must match
+  schema: date, type, category, note, amount, member).
+- "Share read-only access" → log in as admin → 🔑 key icon → copy the
+  Guest password → hand it to the viewer.
+- "Rotate passwords" → set `VITE_ADMIN_PASSWORD` + `VITE_GUEST_PASSWORD`
+  in Vercel → redeploy.
+- "Wipe all data" → log in as admin → ↺ icon → confirm.
+
+## 11. Explicitly out of scope
+
+- Multi-device sync (would require a backend; conflicts with privacy
+  posture).
+- Bank API integration (Plaid etc. — would require a server).
+- AI-generated insights (the engine is deterministic by design; LLM
+  queries are left to the user, with `/llms-full.txt` providing the
+  context they need).
+- Multi-user cloud mode (the app is single-device by philosophy).
+
+## 12. Changelog pointer
+
+See `BLUEPRINT.md` for the full versioned changelog. Currently v0.5.0.
